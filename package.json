@@ -1,0 +1,14 @@
+{
+  "name": "ovc-project-page",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Research project page for Outcome-Conditioned Visual Credit, with a bilingual narrative and animated mechanism.",
+  "type": "module",
+  "engines": {"node": ">=20"},
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "test": "node scripts/check.mjs",
+    "build": "node scripts/build.mjs",
+    "preview": "node scripts/serve.mjs --dist"
+  }
+}

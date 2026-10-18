@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f9f9f6">
+  <meta name="description" content="Outcome-Conditioned Visual Credit (OVC): measuring visual association, calibrating it against outcomes, and assigning token-level learning credit in multimodal reinforcement learning.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="OVC — From Visual Affinity to Learning Credit">
+  <meta property="og:description" content="A closer look at outcome-conditioned token credit for multimodal reinforcement learning. Explore the motivation, animated mechanism, and results.">
+  <meta name="citation_author" content="Yuhang Han">
+  <meta name="citation_author" content="Dingning Liu">
+  <meta name="citation_author" content="Yujie Chen">
+  <meta name="citation_author" content="Yaojie Zhang">
+  <meta name="citation_author" content="Jingwei Song">
+  <meta name="citation_author" content="Zequn Yang">
+  <meta name="citation_author" content="Xuanming Shang">
+  <meta name="citation_author" content="Li Ding">
+  <meta name="citation_author" content="Zhijiang Guo">
+  <meta name="citation_author" content="Linfeng Zhang">
+  <meta name="citation_title" content="From Visual Affinity to Learning Credit in Multimodal Reinforcement Learning">
+  <title>OVC — From Visual Affinity to Learning Credit</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="academic.css">
+  <script src="assets/ovc-engine.js" defer></script>
+  <script src="assets/research-demo.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main" data-i18n="skip">Skip to content</a>
+  <header class="site-header">
+    <nav class="navigation wrap" aria-label="Main navigation">
+      <a class="wordmark" href="#" aria-label="OVC home"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>OVC<span class="wordmark-note">VISUAL CREDIT</span></a>
+      <div class="nav-links" id="nav-links">
+        <a href="#motivation" data-i18n="nav.motivation">Motivation</a>
+        <a href="#method" data-i18n="nav.method">Method</a>
+        <a href="#results" data-i18n="nav.results">Results</a>
+        <a href="#resources" data-i18n="nav.resources">Resources</a>
+      </div>
+      <div class="nav-actions">
+        <button class="language-button" id="language-toggle" type="button" aria-label="Switch to Chinese">中文 <span aria-hidden="true">⇄</span></button>
+        <a class="nav-paper" href="assets/paper.pdf" target="_blank" rel="noopener"><span data-i18n="nav.paper">Paper</span> <span aria-hidden="true">↗</span></a>
+        <button class="menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Toggle menu"><span></span><span></span></button>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero wrap" aria-labelledby="hero-title">
+      <div class="eyebrow"><span class="status-dot"></span><span data-i18n="hero.eyebrow">MULTIMODAL REINFORCEMENT LEARNING</span><span class="eyebrow-rule"></span><span class="mono" data-i18n="hero.status">RESEARCH MANUSCRIPT</span></div>
+      <h1 id="hero-title" data-i18n-html="hero.title">From Visual Affinity<br>to <em>Learning Credit.</em></h1>
+      <p class="paper-subtitle" data-i18n="hero.subtitle">in Multimodal Reinforcement Learning</p>
+      <div class="author-block" aria-label="Authors and affiliations">
+<div class="author-line"><span class="author-name">Yuhang Han<sup>1,2,3,*</sup></span><span class="author-name">Dingning Liu<sup>4,*</sup></span><span class="author-name">Yujie Chen<sup>1,2</sup></span><span class="author-name">Yaojie Zhang<sup>4</sup></span><span class="author-name">Jingwei Song<sup>2</sup></span></div>
+<div class="author-line"><span class="author-name">Zequn Yang<sup>2,3</sup></span><span class="author-name">Xuanming Shang<sup>2,3</sup></span><span class="author-name">Li Ding<sup>2,3</sup></span><span class="author-name">Zhijiang Guo<sup>1,†</sup></span><span class="author-name">Linfeng Zhang<sup>2,†</sup></span></div>
+<div class="affiliations">
+  <p><sup>1</sup>The Hong Kong University of Science and Technology (Guangzhou)</p>
+  <p><span><sup>2</sup>Shanghai Jiao Tong University</span><span><sup>3</sup>Shadow Weave</span></p>
+  <p><sup>4</sup>University of Electronic Science and Technology of China</p>
+</div><p class="contribution-note"><span><sup>*</sup><span data-i18n="authors.equal">Equal contribution.</span></span><span><sup>†</sup><span data-i18n="authors.corresponding">Corresponding authors.</span></span></p></div>
+      <p class="hero-description" data-i18n="hero.description">A visual connection is a measurement. How it should guide learning depends on the outcome. OVC connects the two with outcome-conditioned, token-level credit.</p>
+      <div class="hero-actions">
+        <a class="button primary" href="assets/paper.pdf" target="_blank" rel="noopener"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 2h7l4 4v12H5zM12 2v5h4M8 11h5M8 14h5"/></svg><span data-i18n="hero.paper">Read the paper</span><span aria-hidden="true">↗</span></a>
+        <a class="button secondary" href="#method"><span data-i18n="hero.explore">Explore the mechanism</span><span aria-hidden="true">↓</span></a>
+      </div>
+
+
+      <figure class="overview-figure" aria-labelledby="overview-caption">
+        <div class="figure-topline"><span class="mono" data-i18n="overview.kicker">THE IDEA, IN MOTION</span><span class="diagram-key"><i class="key-visual"></i><span data-i18n="overview.visual">Visual signal</span><i class="key-outcome"></i><span data-i18n="overview.outcome">Outcome evidence</span></span></div>
+        <svg id="overview-animation" class="overview-svg academic-overview" viewBox="0 0 1080 610" role="img" aria-labelledby="overview-svg-title overview-svg-desc">
+  <title id="overview-svg-title">OVC computational graph: rollout supervision, RVE features, refined evidence geometry, normalized credit and GSPO-token updates</title>
+  <desc id="overview-svg-desc">A numerical replay of 192 synthetic tokens in 32 hidden dimensions. Animated stages connect group-relative rewards, image-context affinity, advantage-weighted reference refinement, sigmoid credit and sign-preserving policy updates.</desc>
+  <defs><pattern id="academic-grid" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r=".55" fill="#dce0d9"/></pattern><marker id="academic-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10" fill="#8a968b"/></marker></defs>
+  <rect width="1080" height="610" fill="url(#academic-grid)"/>
+  <text x="25" y="24" class="svg-small" data-i18n="academic.supervision">OUTCOME SUPERVISION · GROUP-RELATIVE ADVANTAGE</text>
+  <path class="flow-line" d="M214 100H236M516 100H540M816 100H840M154 150V183M650 150V183M909 509V523H1030V153" marker-end="url(#academic-arrow)"/>
+  <path class="flow-line" d="M304 355H324M742 355H762" marker-end="url(#academic-arrow)"/>
+  <g class="overview-stage" data-stage="0"><rect class="stage-bg" x="24" y="40" width="190" height="110" rx="8"/>
+    <text x="40" y="62" class="svg-step">x = (I, q)</text>
+    <path d="M49 126L73 78L151 126Z" fill="#e9e2f2" stroke="#8d7ab5" stroke-width="1.5"/><path d="M49 126V78" stroke="#94a68f" stroke-dasharray="3 3"/>
+    <text x="49" y="75" class="svg-tiny">N</text><text x="77" y="90" class="svg-tiny">025°</text><text x="101" y="123" class="svg-tiny">11 km</text><text x="161" y="112" class="svg-tiny">d?</text>
+  </g>
+  <g class="overview-stage" data-stage="0"><rect class="stage-bg" x="236" y="40" width="280" height="110" rx="8"/>
+    <text x="252" y="63" class="svg-label" data-i18n="academic.rollouts">Sample G = 8 trajectories</text><g id="rollout-raster"></g><text x="252" y="135" class="svg-tiny">Rᵢ = 0.9 Rᵢᵃᶜᶜ + 0.1 Rᵢᶠᵐᵗ</text>
+  </g>
+  <g class="overview-stage" data-stage="0"><rect class="stage-bg" x="540" y="40" width="276" height="110" rx="8"/>
+    <text x="557" y="63" class="svg-label" data-i18n="academic.advantages">Relative reward, not token labels</text><g id="reward-chips"></g><text x="557" y="133" class="svg-equation small-equation">Aᵢ = (Rᵢ − R̄) / (s + ε)</text>
+  </g>
+  <g class="overview-stage" data-stage="4"><rect class="stage-bg" x="840" y="40" width="216" height="110" rx="8"/>
+    <text x="857" y="63" class="svg-label">GSPO-token</text><text x="857" y="95" class="svg-equation">A′ᵢₜ = sg(wᵢₜ) Aᵢ</text><text x="857" y="124" class="svg-tiny" data-i18n="academic.clipping">Sequence ratio &amp; clipping retained</text>
+  </g>
+  <text x="25" y="177" class="svg-small" data-i18n="academic.estimator">DETACHED ESTIMATOR · ACTOR PARAMETERS FIXED</text>
+  <g class="overview-stage" data-stage="1"><rect class="stage-bg" x="24" y="188" width="280" height="320" rx="8"/>
+    <text x="42" y="216" class="svg-step">01 / RVE</text><text x="42" y="240" class="svg-body" data-i18n="academic.tensor">Predictive states · 24 × 32</text><g id="state-heatmap"></g>
+    <text x="42" y="343" class="svg-tiny">Sᵢ = diag(σᵢ)⁻¹ · shared scaling</text>
+    <text x="42" y="371" class="svg-tiny">cos(Sᵢhᵢₜ, Sᵢgᵢⁱᵐᵍ)</text><text id="image-affinity-value" x="247" y="371" class="svg-metric"></text>
+    <text x="42" y="396" class="svg-tiny">cos(Sᵢhᵢₜ, Sᵢgᵢᶜᵗˣ)</text><text id="context-affinity-value" x="247" y="396" class="svg-metric"></text>
+    <path d="M42 413H285" stroke="#d8dfd5"/><text x="42" y="440" class="svg-equation">ρᵢₜ = cosᵢₘg − cosᶜₜₓ</text><text id="rho-value" x="42" y="465" class="svg-metric"></text><text x="42" y="489" class="svg-tiny">zᵢₜ = [(1 − pᵢₜ)hᵢₜ ; ρᵢₜ] ∈ ℝ³³</text>
+  </g>
+  <g class="overview-stage" data-stage="2"><rect class="stage-bg" x="326" y="188" width="416" height="320" rx="8"/>
+    <text x="344" y="216" class="svg-step">02 / OEC</text><text x="725" y="216" text-anchor="end" class="svg-tiny" data-i18n="academic.refine">μ⁰ → μ* · one refinement</text>
+    <svg id="overview-scatter" x="338" y="230" width="390" height="190" viewBox="0 0 390 190"></svg>
+    <text x="344" y="447" class="svg-equation small-equation">e*(z) = 2[D⁻¹(μ*₊ − μ*₋)]ᵀ(z − μ̄*)</text><text id="reference-contrast" x="344" y="473" class="svg-metric"></text><text x="344" y="493" class="svg-tiny" data-i18n="academic.metric">D: regularised within-side diagonal variation</text>
+  </g>
+  <g class="overview-stage" data-stage="3"><rect class="stage-bg" x="764" y="188" width="292" height="320" rx="8"/>
+    <text x="782" y="216" class="svg-step">03 / NCA</text><text x="782" y="239" class="svg-tiny">ŵ = 0.8 + 0.4 σ(cᵢe* / τcᵢ)</text>
+    <svg id="overview-sigmoid" x="783" y="251" width="252" height="88" viewBox="0 0 252 88"></svg>
+    <text x="782" y="362" class="svg-tiny" data-i18n="academic.deviation">Token-wise deviation Δw = w − 1</text><g id="overview-credit-bars"></g>
+    <text x="782" y="467" class="svg-equation small-equation">wᵢₜ = ŵᵢₜ / Z &gt; 0</text><text id="batch-normalizer" x="782" y="492" class="svg-metric"></text>
+  </g>
+  <rect x="24" y="531" width="1032" height="55" rx="6" fill="#edf0e8" stroke="#dce2d5"/>
+  <text x="42" y="552" class="svg-small">SYNTHETIC REPLAY · H = 32 · B = 8 · N = 192</text><text id="overview-live-token" x="42" y="574" class="svg-metric"></text>
+  <text id="overview-invariant" x="1037" y="565" text-anchor="end" class="svg-body"></text>
+</svg>
+<div class="mechanism-stage-controls" role="group" aria-label="Select computational stage">
+  <button type="button" data-mechanism-stage="0">00 <span data-i18n="academic.step0">Rollout</span></button><button type="button" data-mechanism-stage="1">01 RVE</button><button type="button" data-mechanism-stage="2">02 OEC</button><button type="button" data-mechanism-stage="3">03 NCA</button><button type="button" data-mechanism-stage="4">04 <span data-i18n="academic.step4">Policy update</span></button>
+</div>
+        <figcaption class="overview-footer" id="overview-caption"><span><span id="overview-phase" class="phase-label">00 / Group-relative rollout supervision</span><span class="caption-separator">·</span><span class="subtle" data-i18n="overview.note">Computed synthetic replay · not a model trace</span></span><span class="animation-actions"><button type="button" id="overview-pause" class="text-button" aria-pressed="false">Ⅱ <span data-i18n="animation.pause">Pause</span></button><a href="assets/mechanism.gif" download class="text-button">GIF <span aria-hidden="true">↗</span></a></span></figcaption>
+        <div class="timeline"><span id="overview-progress"></span></div>
+      </figure>
+      <p class="mobile-swipe" data-i18n="overview.swipe">Swipe to inspect the full computational graph →</p>
+      <div class="headline-results"><div><span class="headline-number">+1.86–2.39<span>pp</span></span><p data-i18n="stat.gain">Six-task mean gain over GSPO</p></div><div><span class="headline-number">3 <span data-i18n="stat.models">backbones</span></span><p data-i18n="stat.scales">Qwen3-VL 4B / 8B · Qwen3.5 9B</p></div><div><span class="headline-number">0 <span data-i18n="stat.modules">extra modules</span></span><p data-i18n="stat.inference">At inference time</p></div></div>
+    </section>
+
+    <section class="section motivation-section" id="motivation" aria-labelledby="motivation-title">
+      <div class="wrap">
+        <div class="section-heading"><span class="section-index">01 / <span data-i18n="motivation.kicker">THE MOTIVATION</span></span><h2 id="motivation-title" data-i18n-html="motivation.title">One outcome.<br>Different roles along the way.</h2><p class="section-intro" data-i18n="motivation.intro">A multimodal response mixes observation, interpretation and reasoning. A single response-level advantage cannot say which part should receive a stronger update.</p></div>
+        <div class="survey-example" id="survey-example">
+  <div class="survey-geometry"><span class="mini-label" data-i18n="survey.kicker">GEOMETRIC REASONING · COORDINATE FRAMES</span>
+    <svg viewBox="0 0 440 355" role="img" aria-label="Survey geometry: Q lies 11 km east of P; R lies 8 km from P at bearing 025 degrees. Interior angle QPR is 65 degrees.">
+      <defs><marker id="north-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10" fill="#8b9d83"/></marker></defs>
+      <path d="M70 280L154.52 98.74L345 280Z" fill="#eee8f5" stroke="#8773ac" stroke-width="1.8"/>
+      <path d="M70 280V47M70 280H402" stroke="#9eac94" stroke-dasharray="4 5" marker-end="url(#north-arrow)"/>
+      <path d="M70 220A60 60 0 0 1 95.36 225.62" fill="none" stroke="#aa775f" stroke-width="1.5"/>
+      <path d="M125 280A55 55 0 0 0 93.24 230.15" fill="none" stroke="#6e5a99" stroke-width="1.5"/>
+      <g fill="#6e5a99"><circle cx="70" cy="280" r="4"/><circle cx="154.52" cy="98.74" r="4"/><circle cx="345" cy="280" r="4"/></g>
+      <text x="60" y="36">N</text><text x="399" y="304">E</text><text x="52" y="303">P</text><text x="342" y="303">Q</text><text x="151" y="82">R</text>
+      <text x="75" y="207" class="bearing-label">025°</text><text x="110" y="259" class="interior-label">65°</text><text x="188" y="306">11 km</text><text x="88" y="177" transform="rotate(-65 88 177)">8 km</text><text x="256" y="175" class="distance-label">d = ?</text>
+      <text x="70" y="338" class="survey-equation">∠QPR = 90° − 25° = 65°</text>
+    </svg>
+    <p data-i18n="survey.question">Q is 11 km due east of P. R is 8 km from P at a clockwise bearing of 025° from north. Find the distance QR.</p>
+    <div class="survey-answer"><span data-i18n="survey.correct">Verified geometric solution</span><strong>d = 10.52 km</strong></div>
+  </div>
+  <div class="survey-reasoning"><div class="scenario-controls" role="group" aria-label="Select failure mode"><button type="button" data-scenario="algebra" class="active" aria-pressed="true" data-i18n="survey.algebra">Late algebra error</button><button type="button" data-scenario="frame" aria-pressed="false" data-i18n="survey.frame">Reference-frame error</button></div>
+    <div class="reasoning-trace" id="reasoning-trace"></div>
+    <div class="survey-takeaway"><span>Aᵢ &lt; 0</span><p data-i18n="survey.takeaway">A failed final answer does not localise the failure. The bearing observation may be valid even when the frame conversion or a later algebraic operation is wrong.</p></div>
+  </div>
+</div>
+<p class="figure-note" data-i18n="example.note">Constructed surveying example; feature coordinates in the replay are synthetic. Valid/error labels explain the example and are never inputs to the OVC estimator. Advantage signs reflect relative rewards, not token correctness.</p>
+        <div class="motivation-arguments"><article><span class="argument-number">01</span><h3 data-i18n="motivation.aTitle">Affinity needs a reference.</h3><p data-i18n="motivation.aText">A predictive state can align with both image representations and the prompt. Absolute image similarity alone does not isolate visual association relative to the surrounding context.</p></article><article><span class="argument-number">02</span><h3 data-i18n="motivation.bTitle">Update direction matters.</h3><p data-i18n="motivation.bText">The same positive weight strengthens learning in a positive-advantage response and strengthens suppression in a negative-advantage response. An unconditional visual bonus ignores that difference.</p></article><article><span class="argument-number">03</span><h3 data-i18n="motivation.cTitle">Measurement needs calibration.</h3><p data-i18n="motivation.cText">OVC asks how features differ across advantage sides, relative to within-side variation. Visual association contributes evidence only through those observed outcome contrasts.</p></article></div>
+        <div class="empirical-note"><span class="mini-label" data-i18n="evidence.label">EVIDENCE BEHIND THE QUESTION</span><p data-i18n="evidence.text">In the paper’s frozen-model analysis, image-affinity quartiles have accuracies of 80.2%, 77.8%, 82.2% and 79.8%. The highest-affinity group is not the most accurate. Context affinity also distinguishes outcome statistics among pairs approximately matched on image affinity.</p><a href="assets/paper.pdf#page=2" target="_blank" rel="noopener" data-i18n="evidence.source">Figure 1 · manuscript p. 2 ↗</a></div>
+      </div>
+    </section>
+
+    <section class="section wrap" id="method" aria-labelledby="method-title">
+      <div class="section-heading"><span class="section-index">02 / <span data-i18n="method.kicker">THE MECHANISM</span></span><h2 id="method-title" data-i18n-html="method.title">Measure. Calibrate.<br><em>Then allocate.</em></h2><p class="section-intro" data-i18n="method.intro">OVC is a detached credit estimator built on existing rollouts. It changes the strength of token updates while retaining the original advantage sign and GSPO sequence-level clipping.</p></div>
+      <div class="method-steps">
+        <article><span class="step-label">01 / RVE</span><h3 data-i18n="method.rveTitle">Relative Visual Encoding</h3><p data-i18n="method.rveText">Contrast image and non-image prompt affinity using the same response-wise diagonal scaling. The prompt prototype comes from the original multimodal input, not a second text-only forward.</p><div class="formula">ρ<sub>it</sub> = cos(Sᵢh<sub>it</sub>, Sᵢg<sup>img</sup>ᵢ)<br><span class="formula-indent">− cos(Sᵢh<sub>it</sub>, Sᵢg<sup>ctx</sup>ᵢ)</span></div><p class="method-detail" data-i18n="method.rveDetail">No mean subtraction in the cosine. The same scaling is applied to the state and both prototypes.</p></article>
+        <article><span class="step-label">02 / OEC</span><h3 data-i18n="method.oecTitle">Outcome-conditioned Evidence Calibration</h3><p data-i18n="method.oecText">Combine the relative visual coordinate with v = (1 − p)h, where p is the sampled token’s probability under the current actor. Compare the joint feature with positive- and negative-advantage reference means under a regularised diagonal within-side metric.</p><div class="formula">z = [(1 − p)h; ρ]<br>e(z) = ‖z − μ₋‖²<sub>D⁻¹</sub> − ‖z − μ₊‖²<sub>D⁻¹</sub></div><p class="method-detail" data-i18n="method.oecDetail">Advantage-magnitude-weighted statistics; one soft reference refinement. The metric and pre-refinement margin scales remain fixed.</p></article>
+        <article><span class="step-label">03 / NCA</span><h3 data-i18n="method.ncaTitle">Normalized Credit Allocation</h3><p data-i18n="method.ncaText">Map signed evidence cᵢe(z) to positive raw weights. Normalize across all valid actor-mini-batch tokens, then multiply the response advantage by the detached token weight.</p><div class="formula">ŵ = λ<sub>min</sub> + (λ<sub>max</sub> − λ<sub>min</sub>) σ(cᵢe/τ<sub>cᵢ</sub>)<br>w = ŵ / mean<sub>tokens</sub>(ŵ), &nbsp; A′ = sg(w)A</div><p class="method-detail" data-i18n="method.ncaDetail">Global mean weight = 1. This preserves signs, not the norm of the resulting policy gradient. Zero-advantage tokens remain in the normalization.</p></article>
+      </div>
+
+      <div class="interactive-lab research-lab" aria-labelledby="lab-title">
+  <div class="lab-header"><div><span class="mini-label" data-i18n="research.kicker">COMPUTATIONAL WORKBENCH</span><h3 id="lab-title" data-i18n="research.title">From representation geometry to update strength.</h3></div><span class="lab-tag">H = 32 · N = 192</span></div>
+  <div class="research-controls">
+    <div><label class="control-label" for="contrast-slider"><span data-i18n="research.coupling">Injected visual–outcome coupling κ</span><output id="contrast-output">+0.60</output></label><input type="range" id="contrast-slider" min="-100" max="100" value="60"><div class="range-labels"><span>−1.00</span><span>0</span><span>+1.00</span></div></div>
+    <div><label class="control-label" for="shrinkage-slider"><span data-i18n="research.shrinkage">Within-side shrinkage η</span><output id="shrinkage-output">0.10</output></label><input type="range" id="shrinkage-slider" min="0" max="100" value="10"><div class="range-labels"><span>0.00</span><span>0.50</span><span>1.00</span></div></div>
+    <div><span class="control-label" data-i18n="research.trajectory">Inspect a trajectory</span><div class="segmented-control" role="group" aria-label="Select advantage side"><button type="button" data-advantage="1" aria-pressed="false">Aᵢ &gt; 0</button><button type="button" data-advantage="-1" class="active" aria-pressed="true">Aᵢ &lt; 0</button></div><p class="control-footnote" data-i18n="research.scope">Re-estimated over both sides of the actor mini-batch.</p></div>
+  </div>
+  <p class="research-control-note" data-i18n="research.controlNote">κ perturbs the synthetic visual–outcome association; it is not an OVC training hyperparameter. η controls variance shrinkage. Reference statistics, the metric and normalization are recomputed after each adjustment.</p>
+  <div class="research-statistics" id="research-statistics"></div>
+  <div class="research-plot-grid">
+    <figure class="research-plot"><div class="plot-heading"><h4 data-i18n="research.geometry">Outcome-discriminative feature geometry</h4><span>192 TOKENS</span></div><svg id="evidence-space" viewBox="0 0 550 345" role="img" aria-label="Projection of 192 synthetic joint token features, refined reference means, and iso-evidence lines"></svg><figcaption data-i18n="research.geometryNote">The horizontal axis projects all 32 predictive coordinates onto their calibrated direction; the vertical axis is relative visual affinity. The dashed line is zero evidence, not a correctness boundary.</figcaption></figure>
+    <figure class="research-plot"><div class="plot-heading"><h4 data-i18n="research.sensitivity">Conditional visual-credit sensitivity</h4><span>FIXED STATISTICS</span></div><svg id="credit-sensitivity" viewBox="0 0 550 345" role="img" aria-label="Positive and negative advantage credit curves as relative visual affinity changes"></svg><figcaption data-i18n="research.sensitivityNote">Sweep ρ while fixing the predictive feature at its reference midpoint and holding μ*, D, τ and Z fixed. The slopes reverse with the advantage sign; this is a conditional illustration, not causal attribution.</figcaption></figure>
+  </div>
+  <div class="allocation-trend"><div class="plot-heading"><div><span class="mini-label" data-i18n="research.traceKicker">ALLOCATION ALONG THE REASONING TRACE</span><h4 data-i18n="research.trendTitle">Compare allocation along the same reasoning trace.</h4></div><span id="trajectory-advantage"></span></div><div class="trend-scroll"><svg id="allocation-trend" viewBox="0 0 1040 280" role="img" aria-label="Uniform, affinity-ranked and OVC mean weights over perception, frame conversion, equation construction and solution stages"></svg></div><div class="token-detail-strip" id="token-detail-strip"></div><p id="research-interpretation" class="research-interpretation" aria-live="polite"></p></div>
+  <details class="estimator-details"><summary data-i18n="research.inspect">Inspect the estimator: reference moments, metric and one refinement</summary><div class="estimator-equations"><p>μ⁰c = Σ<sub>Tc</sub> |Aᵢ| zᵢₜ / M<sub>c</sub> &nbsp; → &nbsp; q<sub>k</sub> = Σ<sub>c</sub> Var<sub>|A|,c</sub>(z<sub>k</sub>)</p><p>d<sub>k</sub> = max((1 − η)q<sub>k</sub> + ηq̄ + ε, r<sub>min</sub>q̄ + ε), &nbsp; q̄ = mean(q₁, …, q<sub>H</sub>)</p><p>u⁰ᵢₜ = σ(cᵢe⁰(zᵢₜ) / τ<sub>cᵢ</sub>), &nbsp; μ*c = Σ |Aᵢ| u⁰ᵢₜ zᵢₜ / Σ |Aᵢ| u⁰ᵢₜ</p><p id="estimator-numbers"></p></div></details>
+  <p class="lab-disclaimer" data-i18n="research.disclaimer">All geometry, features and allocation curves here are computed from a synthetic H=32, B=8, T=24 batch, not extracted from a trained model. The estimator follows Eqs. (1)–(12), including response-wise scaling, advantage-magnitude reference weights, within-side diagonal variation, one refinement and global normalization. The paper’s 9B recipe uses H=4096. Conditional curves keep reference statistics and Z fixed; the batch charts recompute them. The affinity-ranked curve is an illustrative heuristic, not a reproduction of a named baseline. No accuracy trends or empirical results are simulated.</p>
+</div>
+
+
+      <details class="technical-details"><summary><span data-i18n="details.title">Look inside a training update</span><span aria-hidden="true">+</span></summary><div class="details-body"><div><h4 data-i18n="details.passesTitle">Four statistics passes. One policy update.</h4><ol><li data-i18n="details.pass1">Aggregate detached advantage-weighted reference moments and construct the regularised diagonal metric.</li><li data-i18n="details.pass2">Estimate the two margin scales using the initial references.</li><li data-i18n="details.pass3">Perform one soft reference refinement, keeping the metric and margin scales fixed.</li><li data-i18n="details.pass4">Compute the global raw-weight mean over all valid tokens.</li><li data-i18n="details.pass5">Recompute differentiable log probabilities; apply detached credit through GSPO-token, accumulate gradients, and update the actor once.</li></ol></div><div><h4 data-i18n="details.boundaryTitle">What the method does and does not infer</h4><p data-i18n="details.boundary">The actor is fixed between the five passes. Reference groups use the sign of group-relative advantage; the supplied reward mixes accuracy and format. These groups are not token-correctness labels. The estimator is diagonal, not a full-covariance model, and does not establish causal token attribution.</p><p data-i18n="details.scope">The derivation assumes both advantage sides have positive mass. If all rollout groups have constant rewards, advantages and the policy gradient are zero. The reported formulation concerns image-conditioned inputs.</p><a href="assets/paper.pdf#page=17" target="_blank" rel="noopener" data-i18n="details.source">Algorithm 1 · Appendix F ↗</a></div></div></details>
+      <figure class="paper-framework"><img src="assets/framework.png" alt="Original OVC framework from Figure 2: outcome supervision above relative visual encoding, outcome-conditioned evidence calibration and normalized credit allocation." width="1308" height="562" loading="lazy"><figcaption><span data-i18n="framework.caption">The full framework, reproduced from Figure 2 of the supplied manuscript.</span><a href="assets/paper.pdf#page=4" target="_blank" rel="noopener" aria-label="Open manuscript Figure 2">↗</a></figcaption></figure>
+    </section>
+
+    <section class="section results-section" id="results" aria-labelledby="results-title"><div class="wrap">
+      <div class="section-heading"><span class="section-index">03 / <span data-i18n="results.kicker">THE EVIDENCE</span></span><h2 id="results-title" data-i18n-html="results.title">A consistent gain.<br>Across three backbones.</h2><p class="section-intro" data-i18n="results.intro">The same instruction-tuned initialization, RL data and rollout configuration are shared within each model setting. Numbers below are reported in Table 1, averaged over four independent runs.</p></div>
+      <div class="gain-grid"><article><span>Qwen3-VL-4B</span><strong>+2.04<small>pp</small></strong><p>58.67 <span>→</span> 60.71</p></article><article><span>Qwen3-VL-8B</span><strong>+2.39<small>pp</small></strong><p>61.59 <span>→</span> 63.98</p></article><article><span>Qwen3.5-9B</span><strong>+1.86<small>pp</small></strong><p>68.92 <span>→</span> 70.78</p></article></div>
+      <p class="figure-note" data-i18n="results.gainNote">Six-benchmark arithmetic mean: GSPO → GSPO + OVC. Gains are percentage points, not relative percentages. The 9B model uses a different, larger training dataset.</p>
+      <div class="results-panel"><div class="results-panel-heading"><div class="model-tabs" role="group" aria-label="Select model"><button type="button" data-model="4b" aria-pressed="false">Qwen3-VL-4B</button><button type="button" data-model="8b" class="active" aria-pressed="true">Qwen3-VL-8B</button><button type="button" data-model="9b" aria-pressed="false">Qwen3.5-9B</button></div><a href="data/results.json" download class="text-button" data-i18n="results.download">Download data ↓</a></div><div class="comparison-heading"><h3 data-i18n="results.chartTitle">Benchmark-level change over GSPO</h3><span class="mono" data-i18n="results.pp">PERCENTAGE POINTS</span></div><div class="benchmark-deltas" id="benchmark-deltas" aria-live="polite"></div><div class="table-scroll" tabindex="0" role="region" aria-label="Main benchmark results"><table id="results-table"><caption class="sr-only" data-i18n="results.caption">Main benchmark results from Table 1. All scores are percentages.</caption><thead><tr><th scope="col" data-i18n="results.method">Method</th><th scope="col">MMMU</th><th scope="col">MathVision</th><th scope="col">We-Math</th><th scope="col">MathVista</th><th scope="col">MMK12-val</th><th scope="col">MathVerse</th><th scope="col" data-i18n="results.average">Average</th></tr></thead><tbody id="results-body"><tr><th scope="row">Base</th><td>48.78</td><td>24.67</td><td>80.23</td><td>74.40</td><td>64.46</td><td>62.84</td><td>59.23</td></tr><tr><th scope="row">GSPO</th><td>44.56</td><td>27.30</td><td>83.33</td><td>76.10</td><td>74.73</td><td>63.53</td><td>61.59</td></tr><tr><th scope="row">DelTA</th><td>49.21</td><td>24.01</td><td>85.40</td><td>77.03</td><td>77.06</td><td>64.82</td><td>62.92</td></tr><tr><th scope="row">VPPO</th><td>49.43</td><td>27.69</td><td>84.36</td><td>76.21</td><td>75.29</td><td>64.09</td><td>62.85</td></tr><tr><th scope="row">AT-RL</th><td colspan="7">OOM</td></tr><tr class="ours"><th scope="row">GSPO + OVC</th><td>49.56</td><td>29.93</td><td>83.45</td><td>76.97</td><td>78.94</td><td>65.05</td><td>63.98</td></tr></tbody></table></div><p class="table-note" id="model-context"></p></div>
+      <div class="results-reading"><span class="mini-label" data-i18n="results.readingLabel">READ THE RESULTS WITH THE RIGHT SCOPE</span><p data-i18n="results.reading">The six-task mean improves for every evaluated backbone, but individual tasks do not all improve: on Qwen3.5-9B, MathVerse drops by 0.94 points versus GSPO. DelTA also remains stronger on 8B We-Math. OVC’s claim is a stronger overall average under the reported settings, not universal benchmark dominance.</p></div>
+
+      <div class="training-dynamics"><div><span class="mini-label" data-i18n="dynamics.kicker">OBSERVED TRAINING DYNAMICS</span><h3 data-i18n="dynamics.title">Beyond a final-checkpoint comparison.</h3><p data-i18n="dynamics.text">In the manuscript’s Qwen3.5-9B run on Math77K, OVC generally achieves higher training reward and MMK12-val performance over the training trajectory. These are the original reported curves, not a reconstructed or simulated time series.</p><a href="assets/paper.pdf#page=7" target="_blank" rel="noopener" data-i18n="dynamics.source">Figure 5 · manuscript p. 7 ↗</a></div><figure><img src="assets/training-dynamics.png" width="956" height="384" loading="lazy" alt="Original Figure 5: GSPO in blue and OVC in red, showing measured training reward and MMK12-val reward over 0–300 training steps."><figcaption data-i18n="dynamics.caption">Original axes and curves retained. Blue: GSPO · Red: OVC. Qwen3.5-9B / Math77K.</figcaption></figure></div>
+      <div class="ablation-layout"><div><span class="mini-label" data-i18n="ablation.kicker">BEYOND NONUNIFORM WEIGHTS</span><h3 data-i18n="ablation.title">The token–weight correspondence matters.</h3><p data-i18n="ablation.text">Averaging weights within each response loses 1.48 points. Permuting them loses 1.56 points, even though each response keeps exactly the same weight multiset. The gain depends on where the weights go.</p><p class="figure-note" data-i18n="ablation.note">Table 2 · Qwen3-VL-8B · Four-task mean, not the six-task average above. Full OVC: 63.85; GSPO: 62.57.</p><details class="compact-details"><summary data-i18n="ablation.interactionTitle">Why the visual coordinate and calibration need to work together</summary><p data-i18n="ablation.interaction">With within-side calibration, adding the visual coordinate raises the mean from 61.98 to 63.85. With an identity metric, it lowers the mean from 62.29 to 62.10. This interaction cautions against treating visual affinity as an independently beneficial bonus.</p></details></div><div class="ablation-chart"><div class="ablation-chart-heading"><span data-i18n="ablation.variant">Ablation</span><span data-i18n="ablation.change">Change from full OVC</span></div><div class="ablation-row"><span data-i18n="ablation.noVisual">No visual coordinate</span><div style="--loss:93.5%"></div><strong>−1.87</strong></div><div class="ablation-row"><span data-i18n="ablation.absolute">Absolute image affinity</span><div style="--loss:81%"></div><strong>−1.62</strong></div><div class="ablation-row"><span data-i18n="ablation.identity">Identity metric</span><div style="--loss:87.5%"></div><strong>−1.75</strong></div><div class="ablation-row"><span data-i18n="ablation.responseMean">Response-mean weights</span><div style="--loss:74%"></div><strong>−1.48</strong></div><div class="ablation-row"><span data-i18n="ablation.permutation">Within-response permutation</span><div style="--loss:78%"></div><strong>−1.56</strong></div><div class="ablation-row"><span data-i18n="ablation.ranked">Affinity-ranked weights</span><div style="--loss:79%"></div><strong>−1.58</strong></div></div></div>
+    </div></section>
+
+    <section class="section wrap efficiency-section" aria-labelledby="efficiency-title"><div><span class="section-index">04 / <span data-i18n="efficiency.kicker">TRAINING-TIME ONLY</span></span><h2 id="efficiency-title" data-i18n-html="efficiency.title">Reuse the rollout.<br>Keep inference unchanged.</h2><p class="section-intro" data-i18n="efficiency.text">OVC adds no learnable head, auxiliary reward model or process annotations. Its additional computation is in detached training statistics, not in the inference graph.</p></div><div class="cost-card"><div class="cost-number">5.16<span>%</span></div><p data-i18n="efficiency.share">of the measured training step spent on OVC-specific passes</p><div class="cost-track"><span></span></div><div class="cost-breakdown"><span data-i18n="efficiency.ovc">OVC statistics</span><strong>189 s / 3,663 s</strong></div><p class="figure-note" data-i18n="efficiency.note">Figure 4 reports a single complete training step. This is a share of total step time, not a universal slowdown or an inference-time overhead.</p></div></section>
+
+    <section class="resources-section" id="resources" aria-labelledby="resources-title"><div class="wrap"><div class="resources-top"><div><span class="section-index">05 / <span data-i18n="resources.kicker">GO DEEPER</span></span><h2 id="resources-title" data-i18n="resources.title">Read the full story.</h2><p data-i18n="resources.description">Derivations, evaluation protocols, complete ablations and the actor-update algorithm are in the manuscript and its supplement.</p></div><a class="button primary" href="assets/paper.pdf" target="_blank" rel="noopener"><span data-i18n="resources.paper">Full paper & supplement</span> <span aria-hidden="true">↗</span></a></div><div class="resource-links"><a href="assets/paper.pdf#page=3" target="_blank" rel="noopener"><span data-i18n="resources.method">Method & derivations</span><span>§3 / App. B–E ↗</span></a><a href="assets/paper.pdf#page=6" target="_blank" rel="noopener"><span data-i18n="resources.results">Results & ablations</span><span>Tables 1–2 ↗</span></a><a href="assets/paper.pdf#page=17" target="_blank" rel="noopener"><span data-i18n="resources.algorithm">Actor-update algorithm</span><span>Algorithm 1 ↗</span></a><a href="assets/mechanism.gif" download><span data-i18n="resources.animation">Mechanism animation</span><span>GIF ↓</span></a></div><div class="citation-box"><div><span class="mini-label" data-i18n="citation.title">MANUSCRIPT REFERENCE</span><button type="button" class="text-button" id="copy-citation" data-i18n="citation.copy">Copy reference</button></div><p id="citation-text">Yuhang Han; Dingning Liu; Yujie Chen; Yaojie Zhang; Jingwei Song; Zequn Yang; Xuanming Shang; Li Ding; Zhijiang Guo; Linfeng Zhang. From Visual Affinity to Learning Credit in Multimodal Reinforcement Learning. Research manuscript, 2026.</p><p class="figure-note" data-i18n="citation.note">Author names and affiliations are supplied by the authors for this project page. The linked PDF retains its review-manuscript formatting; no publication venue, arXiv identifier or public code URL is asserted.</p><span id="copy-status" class="sr-only" aria-live="polite"></span></div></div></section>
+  </main>
+
+  <footer class="wrap site-footer"><a class="wordmark" href="#"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>OVC</a><p data-i18n="footer.text">Visual association, interpreted through outcomes.</p><a href="#main" data-i18n="footer.top">Back to top ↑</a></footer>
+  <noscript><p class="noscript-note">The paper, motivation, method and default results remain readable without JavaScript. Enable JavaScript for the interactive demo, animations, language switching and model tabs.</p></noscript>
+</body>
+</html>
