@@ -4,6 +4,8 @@
 
 **论文：** *From Visual Affinity to Learning Credit in Multimodal Reinforcement Learning*。
 
+**网站：** [kawhiiiileo.github.io/OVC_PAGE](https://kawhiiiileo.github.io/OVC_PAGE/) · **源码：** [kawhiiiileo/OVC_PAGE](https://github.com/kawhiiiileo/OVC_PAGE)
+
 页面包含完整研究动机、RVE → OEC → NCA 机制动画、可下载 GIF、包含 192 个合成 token、32 维特征、侧内方差校准与一次软参考更新的数值回放、三种模型的完整主结果、关键消融和训练开销说明。支持中英文切换、手机布局、键盘访问和减少动画偏好。字体、数据、图片与论文均为本地资源，没有运行时 CDN 或后端服务依赖。
 
 [查看页面截图](preview.png) · [查看机制 GIF](assets/mechanism.gif)
@@ -13,7 +15,8 @@
 需要 Node.js 20 或以上版本，不需要执行 `npm install`。
 
 ```bash
-cd ovc-project-page
+git clone https://github.com/kawhiiiileo/OVC_PAGE.git
+cd OVC_PAGE
 npm run dev
 ```
 
@@ -27,16 +30,13 @@ npm run preview   # 通过 HTTP 预览 dist/
 
 ## 部署到 GitHub Pages
 
-1. 在 GitHub 新建仓库，把**此目录里面的文件**放到仓库根目录，包含 `.github/`，并推送到 `main` 分支。
-2. 仓库进入 **Settings → Pages → Build and deployment → Source**，选择 **GitHub Actions**。
-3. 在 **Actions** 中运行 `Deploy project page to GitHub Pages`，或者向 `main` 推送一次提交。
-4. 工作流先校验再构建，最后发布 `dist/`。完成后的 Pages 地址会出现在部署环境中，通常为 `https://<用户名>.github.io/<仓库名>/`。
+仓库已启用 **GitHub Actions** 作为 Pages 的发布源。向 `main` 推送提交后，工作流使用 Node.js 24 校验内容、构建 `dist/`，并自动部署到 [项目网站](https://kawhiiiileo.github.io/OVC_PAGE/)。
 
-所有资源均使用相对路径，无需修改仓库名对应的 base path。工作流也可在 Actions 页面手动触发。GitHub Pages 的使用范围取决于仓库可见性和账户计划；具体配置见 [GitHub 官方工作流文档](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)。当前项目仅在本地生成和验证，没有创建远端仓库或执行公开发布。
+可以在 [Actions](https://github.com/kawhiiiileo/OVC_PAGE/actions/workflows/deploy.yml) 查看部署状态或手动运行 `Deploy project page to GitHub Pages`。所有资源均使用相对路径，兼容 `/OVC_PAGE/` 项目路径。工作流配置见 `.github/workflows/deploy.yml`；Pages 配置参考 [GitHub 官方工作流文档](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)。
 
 ## 已完成的验证
 
-`npm test` 和 `npm run build` 均通过。Chromium 浏览器检查覆盖 360 / 390 / 768 / 1024 / 1440 像素宽度、动画播放与暂停、中英切换及语言记忆、三模型表格、滑块键盘操作、优势符号保持、全局权重均值、引用复制、移动导航及减少动画偏好。生产构建已在 `/ovc-project-page/` 子路径下实际加载，论文、图像、GIF 和 JSON 均正常返回。GIF 已升级为五阶段高密度计算图，支持循环播放。GitHub 端的部署工作流尚未远端运行。
+`npm test` 和 `npm run build` 均通过。Chromium 浏览器检查覆盖 360 / 390 / 768 / 1024 / 1440 像素宽度、动画播放与暂停、中英切换及语言记忆、三模型表格、滑块键盘操作、优势符号保持、全局权重均值、引用复制、移动导航及减少动画偏好。生产构建已在 `/ovc-project-page/` 子路径下实际加载，论文、图像、GIF 和 JSON 均正常返回。GIF 已升级为五阶段高密度计算图，支持循环播放。远端校验、构建与部署结果可在上述 Actions 页面查看。
 
 ## 内容来源与边界
 
@@ -55,7 +55,7 @@ npm run preview   # 通过 HTTP 预览 dist/
 | 训练与验证趋势 | 图 5，第 7 页，保留原始曲线与坐标轴，不模拟或重建时间序列 |
 | 作者、机构和贡献标记 | 用户提供的完整作者列表：10 位作者、4 个机构、共同一作与通讯作者 |
 
-作者和机构信息已按用户提供的列表加入主页、引用文本与学术搜索元数据；正式录用信息、arXiv 编号和公开代码仓库未作推断。所提供 PDF 为匿名审稿稿件，并带有保密标记；`assets/paper.pdf` 保留原文件，项目没有对其进行公开分发。实际公开网站前，请确认你有公开该版本稿件的权限，或换成可公开的版本。页面上的“Paper”会直接链接这个 PDF。
+作者和机构信息已按用户提供的列表加入主页、引用文本与学术搜索元数据；正式录用信息、arXiv 编号和训练代码仓库未作推断。所提供 PDF 为匿名审稿稿件，并带有保密标记；`assets/paper.pdf` 保留原文件，页面上的“Paper”直接链接这个 PDF。
 
 主结果数据可在 `data/results.json` 修改；正文及作者信息在 `index.html`，通用翻译与交互在 `app.js`，基础样式在 `styles.css`，学术图表样式在 `academic.css`。`assets/ovc-engine.js` 实现可测试的数值估计器，`assets/research-demo.js` 负责双语图表与动态回放。`assets/mechanism.gif` 是机制动画的便携版本；网页内使用原生 SVG/JavaScript 动画，支持暂停，并在离屏时停止推进。
 
