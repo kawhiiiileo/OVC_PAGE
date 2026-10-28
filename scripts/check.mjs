@@ -17,6 +17,27 @@ for (const match of html.matchAll(/(?:href|src)="([^"]+)"/g)) {
     await access(path.join(root, url.split("#")[0].split("?")[0]));
   }
 }
+// Paper buttons and copied citation must stay aligned with the arXiv record.
+const paperUrl = "https://arxiv.org/abs/2610.32324";
+assert(!html.includes("assets/paper.pdf"), "Paper links must use arXiv");
+const paperLinks = [...html.matchAll(/href="(https:\/\/arxiv\.org\/abs\/[^"]+)"/g)];
+assert.equal(paperLinks.length, 10, "All paper links should open arXiv");
+assert(paperLinks.every((match) => match[1] === paperUrl));
+const citation = html.match(/<pre id="citation-text"[^>]*><code>([\s\S]*?)<\/code><\/pre>/)?.[1];
+assert(citation, "Missing copyable BibTeX");
+assert(citation.startsWith("@misc{han2026visualaffinitylearningcredit,"));
+for (const field of [
+  "title={From Visual Affinity to Learning Credit in Multimodal Reinforcement Learning}",
+  "author={Yuhang Han and Dingning Liu and Yujie Chen and Yaojie Zhang and Jingwei Song and Zequn Yang and Xuanming Shang and Li Ding and Zhijiang Guo and Linfeng Zhang}",
+  "year={2026}", "eprint={2610.32324}", "archivePrefix={arXiv}", "primaryClass={cs.AI}",
+  "url={https://arxiv.org/abs/2610.32324}",
+]) assert(citation.includes(field), `Missing BibTeX field: ${field}`);
+const readme = await readFile(path.join(root, "README.md"), "utf8");
+assert(readme.includes("\`\`\`bibtex\n" + citation + "\n\`\`\`"), "README citation differs from page");
+const app = await readFile(path.join(root, "app.js"), "utf8");
+assert(app.includes('"citation.copy": "复制 BibTeX"'));
+assert(app.includes('const text = $("#citation-text").textContent;'), "Copy the displayed BibTeX");
+assert(!app.includes("链接 PDF 保留审稿稿件格式"));
 assert.equal(data.benchmarks.length, 6);
 for (const model of Object.values(data.models)) {
   for (const row of model.rows) {

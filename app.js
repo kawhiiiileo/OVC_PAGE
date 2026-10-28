@@ -10,7 +10,7 @@ document.querySelectorAll("[data-i18n], [data-i18n-html]").forEach((node) => {
 const chinese = {
   "skip": "跳到正文",
   "nav.motivation": "研究动机", "nav.method": "方法机制", "nav.results": "实验结果", "nav.resources": "论文资料", "nav.paper": "论文",
-  "hero.eyebrow": "多模态强化学习", "hero.status": "研究稿件",
+  "hero.eyebrow": "多模态强化学习", "hero.status": "arXiv:2610.32324",
   "hero.title": "从视觉关联<br>到<em>学习信用分配。</em>",
   "hero.subtitle": "From Visual Affinity to Learning Credit in Multimodal Reinforcement Learning",
   "hero.description": "视觉关联描述的是一种表征关系，如何据此调整学习，还需要结合结果反馈。OVC 通过结果条件校准，把视觉关联转化为 token 级的学习信用。",
@@ -28,7 +28,7 @@ const chinese = {
   "motivation.aTitle": "亲和度需要参照系。", "motivation.aText": "同一个预测状态可能同时接近图像表征与提示文本表征。只看图像余弦相似度，无法区分相对于周围上下文的视觉关联。",
   "motivation.bTitle": "更新方向不能忽略。", "motivation.bText": "正权重在正优势回答中放大强化作用，在负优势回答中则放大抑制作用。固定地偏爱视觉关联高的 token，忽略了这一方向差异。",
   "motivation.cTitle": "测量结果需要校准。", "motivation.cText": "OVC 比较正负优势两侧的特征均值，并考虑侧内变化尺度。视觉关联通过实际观测到的结果差异提供证据，而不是直接获得固定奖励。",
-  "evidence.label": "论文中的动机证据", "evidence.text": "冻结模型分析中，按图像亲和度从低到高划分的四组准确率为 80.2%、77.8%、82.2%、79.8%。亲和度最高的一组并非最准确。在图像亲和度近似匹配的回答对中，上下文亲和度也对应不同的结果统计。", "evidence.source": "图 1 · 稿件第 2 页 ↗",
+  "evidence.label": "论文中的动机证据", "evidence.text": "冻结模型分析中，按图像亲和度从低到高划分的四组准确率为 80.2%、77.8%、82.2%、79.8%。亲和度最高的一组并非最准确。在图像亲和度近似匹配的回答对中，上下文亲和度也对应不同的结果统计。", "evidence.source": "图 1 · arXiv ↗",
   "method.kicker": "方法机制", "method.title": "先测量，再校准，<br><em>最后分配信用。</em>",
   "method.intro": "OVC 复用已有采样回答，用不参与梯度传播的统计量估计信用。它调整各 token 的更新强度，同时保留原优势符号与 GSPO 的序列级裁剪。",
   "method.rveTitle": "相对视觉编码", "method.rveText": "在相同的回答内对角缩放下，计算预测状态对图像与非图像提示的亲和度差。上下文原型来自原始多模态输入，无需额外执行纯文本前向。", "method.rveDetail": "余弦计算不减去均值；预测状态与两个原型应用同一个缩放。",
@@ -43,7 +43,7 @@ const chinese = {
   "ablation.kicker": "不仅仅是权重不均匀", "ablation.title": "权重分给哪个 token，确实重要。", "ablation.text": "把每条回答的权重替换为该回答内均值，会损失 1.48 个百分点。回答内随机置换权重则损失 1.56 个百分点，尽管该回答拥有的权重集合完全不变。增益取决于权重与具体 token 的对应关系。", "ablation.note": "表 2 · Qwen3-VL-8B · 此处为四任务均分，与上方六任务均分不同。完整 OVC 为 63.85，GSPO 为 62.57。", "ablation.interactionTitle": "为什么视觉坐标与校准需要共同发挥作用", "ablation.interaction": "使用侧内校准时，加入视觉坐标使均分由 61.98 提高到 63.85；使用单位度量时，反而由 62.29 降至 62.10。这一交互作用说明，视觉亲和度不应被当作独立有效的固定加分项。", "ablation.variant": "消融设置", "ablation.change": "相对完整 OVC 的变化", "ablation.noVisual": "去掉视觉坐标", "ablation.absolute": "绝对图像亲和度", "ablation.identity": "单位度量矩阵", "ablation.responseMean": "回答内均值权重", "ablation.permutation": "回答内随机置换", "ablation.ranked": "按亲和度排序权重",
   "efficiency.kicker": "仅增加训练阶段计算", "efficiency.title": "复用采样回答，<br>保持推理路径不变。", "efficiency.text": "OVC 不引入可学习预测头、额外奖励模型或过程标注。新增计算来自不参与梯度传播的训练统计，而不是推理计算图。", "efficiency.share": "在测得的一次完整训练步中，OVC 专属统计遍历所占的时间比例", "efficiency.ovc": "OVC 统计计算", "efficiency.note": "图 4 给出一次完整训练步的测量。这是总步耗时中的占比，不是通用减速比，也不是推理开销。",
   "resources.kicker": "继续阅读", "resources.title": "查看完整论文。", "resources.description": "推导、评估协议、完整消融实验和 actor 更新算法，均包含在论文及补充材料中。", "resources.paper": "论文与补充材料", "resources.method": "方法与理论推导", "resources.results": "实验与消融", "resources.algorithm": "Actor 更新算法", "resources.animation": "机制动图",
-  "citation.title": "稿件参考信息", "citation.copy": "复制参考信息", "citation.note": "本页作者与机构信息由作者提供。链接 PDF 保留审稿稿件格式；本页不声称正式发表会场、arXiv 编号或公开代码地址。", "footer.text": "结合结果反馈，理解视觉关联。", "footer.top": "返回顶部 ↑",
+  "citation.title": "BibTeX 引用", "citation.copy": "复制 BibTeX", "citation.note": "请使用上方 BibTeX 引用 arXiv:2610.32324。论文链接均指向 arXiv 页面。", "footer.text": "结合结果反馈，理解视觉关联。", "footer.top": "返回顶部 ↑",
 };
 
 const dynamicCopy = {
@@ -73,6 +73,7 @@ let selectedModel = "8b";
 let results = null;
 let responseSign = -1;
 Object.assign(chinese, window.OVCResearch.translations);
+chinese["dynamics.source"] = "图 5 · arXiv ↗";
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 let paused = reducedMotion.matches;
 let progress = 0;
